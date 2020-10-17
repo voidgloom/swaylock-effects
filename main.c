@@ -641,7 +641,6 @@ static void handle_xdg_output_done(void *data, struct zxdg_output_v1 *output) {
 
 	// If the image doesn't change even after we know the surface's name,
 	if (new_image == surface->image && state->args.screenshots) {
-		printf("start screencopy_frame\n");
 		surface->screencopy_frame = zwlr_screencopy_manager_v1_capture_output(
 				state->screencopy_manager, false, surface->output);
 		zwlr_screencopy_frame_v1_add_listener(surface->screencopy_frame,
