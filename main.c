@@ -316,6 +316,7 @@ static void create_layer_surface(struct swaylock_surface *surface) {
 }
 
 static void initially_render_surface(struct swaylock_surface *surface) {
+	swaylock_trace();
 	if (surface_is_opaque(surface) &&
 			surface->state->args.mode != BACKGROUND_MODE_CENTER &&
 			surface->state->args.mode != BACKGROUND_MODE_FIT) {
@@ -334,6 +335,7 @@ static void initially_render_surface(struct swaylock_surface *surface) {
 static void layer_surface_configure(void *data,
 		struct zwlr_layer_surface_v1 *layer_surface,
 		uint32_t serial, uint32_t width, uint32_t height) {
+	swaylock_trace();
 	struct swaylock_surface *surface = data;
 	surface->width = width;
 	surface->height = height;
@@ -348,6 +350,7 @@ static void layer_surface_configure(void *data,
 
 static void layer_surface_closed(void *data,
 		struct zwlr_layer_surface_v1 *layer_surface) {
+	swaylock_trace();
 	struct swaylock_surface *surface = data;
 	destroy_surface(surface);
 }
@@ -409,6 +412,7 @@ static void handle_wl_output_geometry(void *data, struct wl_output *wl_output,
 		int32_t x, int32_t y, int32_t width_mm, int32_t height_mm,
 		int32_t subpixel, const char *make, const char *model,
 		int32_t transform) {
+	swaylock_trace();
 	struct swaylock_surface *surface = data;
 	surface->subpixel = subpixel;
 	surface->transform = transform;
@@ -419,15 +423,18 @@ static void handle_wl_output_geometry(void *data, struct wl_output *wl_output,
 
 static void handle_wl_output_mode(void *data, struct wl_output *output,
 		uint32_t flags, int32_t width, int32_t height, int32_t refresh) {
+	swaylock_trace();
 	// Who cares
 }
 
 static void handle_wl_output_done(void *data, struct wl_output *output) {
+	swaylock_trace();
 	// Who cares
 }
 
 static void handle_wl_output_scale(void *data, struct wl_output *output,
 		int32_t factor) {
+	swaylock_trace();
 	struct swaylock_surface *surface = data;
 	surface->scale = factor;
 	if (surface->state->run_display) {
@@ -484,6 +491,7 @@ static struct wl_buffer *create_shm_buffer(struct wl_shm *shm, enum wl_shm_forma
 static void handle_screencopy_frame_buffer(void *data,
 		struct zwlr_screencopy_frame_v1 *frame, uint32_t format, uint32_t width,
 		uint32_t height, uint32_t stride) {
+	swaylock_trace();
 	struct swaylock_surface *surface = data;
 
 	void *bufdata;
@@ -505,6 +513,7 @@ static void handle_screencopy_frame_buffer(void *data,
 
 static void handle_screencopy_frame_flags(void *data,
 		struct zwlr_screencopy_frame_v1 *frame, uint32_t flags) {
+	swaylock_trace();
 	struct swaylock_surface *surface = data;
 
 	// The transform affecting a screenshot consists of three parts:
@@ -552,6 +561,7 @@ static void handle_screencopy_frame_flags(void *data,
 static void handle_screencopy_frame_ready(void *data,
 		struct zwlr_screencopy_frame_v1 *frame, uint32_t tv_sec_hi,
 		uint32_t tv_sec_lo, uint32_t tv_nsec) {
+	swaylock_trace();
 	struct swaylock_surface *surface = data;
 	struct swaylock_state *state = surface->state;
 
@@ -585,6 +595,7 @@ static void handle_screencopy_frame_ready(void *data,
 
 static void handle_screencopy_frame_failed(void *data,
 		struct zwlr_screencopy_frame_v1 *frame) {
+	swaylock_trace();
 	fprintf(stderr, "Screencopy failed!\n");
 }
 
@@ -597,16 +608,19 @@ static const struct zwlr_screencopy_frame_v1_listener screencopy_frame_listener 
 
 static void handle_xdg_output_logical_size(void *data, struct zxdg_output_v1 *output,
 		int width, int height) {
+	swaylock_trace();
 	// Who cares
 }
 
 static void handle_xdg_output_logical_position(void *data,
 		struct zxdg_output_v1 *output, int x, int y) {
+	swaylock_trace();
 	// Who cares
 }
 
 static void handle_xdg_output_name(void *data, struct zxdg_output_v1 *output,
 		const char *name) {
+	swaylock_trace();
 	swaylock_log(LOG_DEBUG, "output name is %s", name);
 	struct swaylock_surface *surface = data;
 	surface->xdg_output = output;
@@ -615,10 +629,12 @@ static void handle_xdg_output_name(void *data, struct zxdg_output_v1 *output,
 
 static void handle_xdg_output_description(void *data, struct zxdg_output_v1 *output,
 		const char *description) {
+	swaylock_trace();
 	// Who cares
 }
 
 static void handle_xdg_output_done(void *data, struct zxdg_output_v1 *output) {
+	swaylock_trace();
 	struct swaylock_surface *surface = data;
 	struct swaylock_state *state = surface->state;
 	cairo_surface_t *new_image = select_image(surface->state, surface);

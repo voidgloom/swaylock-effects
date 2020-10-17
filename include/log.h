@@ -33,4 +33,7 @@ const char *_swaylock_strip_path(const char *filepath);
 #define swaylock_log_errno(verb, fmt, ...) \
 	swaylock_log(verb, fmt ": %s", ##__VA_ARGS__, strerror(errno))
 
+#define swaylock_trace() \
+	swaylock_log(LOG_DEBUG, "trace: %s", __func__)
+
 #endif
