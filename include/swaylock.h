@@ -111,17 +111,12 @@ struct swaylock_state {
 };
 
 struct swaylock_surface {
-	union {
-		cairo_surface_t *image;
-		struct {
-			uint32_t format, width, height, stride;
-			enum wl_output_transform transform;
-			void *data;
-			struct swaylock_image *image;
-			bool ready;
-		} screencopy;
-	};
-	bool ready;
+	cairo_surface_t *image;
+	struct {
+		uint32_t format, width, height, stride;
+		enum wl_output_transform transform;
+		void *data;
+	} screencopy;
 	struct swaylock_state *state;
 	struct wl_output *output;
 	uint32_t output_global_name;
@@ -135,6 +130,7 @@ struct swaylock_surface {
 	struct pool_buffer indicator_buffers[2];
 	struct pool_buffer *current_buffer;
 	struct swaylock_fade fade;
+	int events_pending;
 	bool frame_pending, dirty;
 	uint32_t width, height;
 	uint32_t indicator_width, indicator_height;
