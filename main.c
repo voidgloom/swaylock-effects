@@ -585,6 +585,13 @@ static void handle_screencopy_frame_ready(void *data,
 			swaylock_log(LOG_ERROR, "Failed to run effects");
 		} else {
 			surface->image = image;
+
+			// Insert the image into the list of images too,
+			// so that we can re-use it if the output reconnects
+			struct swaylock_image *img = calloc(1, sizeof(struct swaylock_image));
+			img->output_name = surface->output_name;
+			img->cairo_surface = image;
+			wl_list_insert(&state->images, &img->link);
 		}
 	}
 
