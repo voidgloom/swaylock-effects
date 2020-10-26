@@ -1792,6 +1792,12 @@ int main(int argc, char **argv) {
 		}
 	}
 
+	wl_list_for_each(surface, &state.surfaces, link) {
+		while (surface->events_pending > 0) {
+			wl_display_roundtrip(state.display);
+		}
+	}
+
 	if (state.args.daemonize) {
 		wl_display_roundtrip(state.display);
 		daemonize();
