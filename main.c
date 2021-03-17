@@ -351,8 +351,8 @@ static void layer_surface_configure(void *data,
 	struct swaylock_surface *surface = data;
 	surface->width = width;
 	surface->height = height;
-	surface->indicator_width = 1;
-	surface->indicator_height = 1;
+	surface->indicator_width = 0;
+	surface->indicator_height = 0;
 	zwlr_layer_surface_v1_ack_configure(layer_surface, serial);
 
 	if (--surface->events_pending == 0) {
@@ -707,7 +707,7 @@ static void handle_global(void *data, struct wl_registry *registry,
 	struct swaylock_state *state = data;
 	if (strcmp(interface, wl_compositor_interface.name) == 0) {
 		state->compositor = wl_registry_bind(registry, name,
-				&wl_compositor_interface, 3);
+				&wl_compositor_interface, 4);
 	} else if (strcmp(interface, wl_subcompositor_interface.name) == 0) {
 		state->subcompositor = wl_registry_bind(registry, name,
 				&wl_subcompositor_interface, 1);
