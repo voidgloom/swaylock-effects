@@ -146,8 +146,8 @@ void render_frame(struct swaylock_surface *surface) {
 	int arc_thickness = state->args.thickness * surface->scale;
 	int buffer_diameter = (arc_radius + arc_thickness) * 2;
 
-	int buffer_width = surface->indicator_width;
-	int buffer_height = surface->indicator_height;
+	int buffer_width = surface->width;
+	int buffer_height = surface->height;
 	int new_width = buffer_diameter;
 	int new_height = buffer_diameter;
 
