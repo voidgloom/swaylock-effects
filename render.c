@@ -139,7 +139,7 @@ void render_frame_background(struct swaylock_surface *surface) {
 
 			cairo_text_extents(cairo, text_clockL2, &extents_clock_l2);
 			cairo_font_extents(cairo, &fe_clock_l2);
-			y_clock += font_size * surface->scale;
+			y_clock += (font_size / 2) * surface->scale;
 
 			cairo_move_to(cairo, x_clock, y_clock);
 			cairo_show_text(cairo, text_clockL2);
