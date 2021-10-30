@@ -90,7 +90,7 @@ void render_frame_background(struct swaylock_surface *surface) {
 		render_background_image(cairo, surface->image,
 			state->args.mode, buffer_width, buffer_height);
 	}
-	cairo_set_source_rgba(cairo, 0, 0, 0, 0);
+	cairo_set_source_rgba(cairo, 255, 255, 255, 0);
 	cairo_set_operator(cairo, CAIRO_OPERATOR_SOURCE);
 	cairo_restore(cairo);
 	cairo_set_antialias(cairo, CAIRO_ANTIALIAS_BEST);
@@ -133,6 +133,9 @@ void render_frame_background(struct swaylock_surface *surface) {
 			cairo_show_text(cairo, text_clockL1);
 			cairo_close_path(cairo);
 			cairo_new_sub_path(cairo);
+
+
+			cairo_set_font_size(cairo, font_size / 2);
 
 			cairo_text_extents(cairo, text_clockL2, &extents_clock_l2);
 			cairo_font_extents(cairo, &fe_clock_l2);
