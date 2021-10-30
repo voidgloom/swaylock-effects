@@ -373,6 +373,8 @@ static const struct zwlr_layer_surface_v1_listener layer_surface_listener = {
 	.closed = layer_surface_closed,
 };
 
+uint32_t last_clock_time = 0;
+
 static const struct wl_callback_listener surface_frame_listener;
 
 static void surface_frame_handle_done(void *data, struct wl_callback *callback,
@@ -389,10 +391,14 @@ static void surface_frame_handle_done(void *data, struct wl_callback *callback,
 		surface->frame_pending = true;
 		surface->dirty = false;
 
+		if (time - 1000 > last_clock_time)
+			render_frame_background(surface);
+
 		if (!fade_is_complete(&surface->fade)) {
 			render_background_fade(surface, time);
 			surface->dirty = true;
 		}
+		
 
 		render_frame(surface);
 	}
@@ -1909,9 +1915,5 @@ int main(int argc, char **argv) {
 
 	free(state.args.font);
 
-	
-	printf("clock_x: %i", state.args.clock_x);
-	printf("clock_y: %i", state.args.clock_y);
-	
 	return 0;
 }
