@@ -212,6 +212,42 @@ void render_frame(struct swaylock_surface *surface) {
 		state->args.show_indicator && (state->auth_state != AUTH_STATE_IDLE ||
 			state->args.indicator_idle_visible);
 
+
+	double font_size;
+
+	cairo_select_font_face(cairo, state->args.font,
+			CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+	if (state->args.font_size > 0) {
+			font_size = state->args.font_size;
+	} else {
+		font_size = arc_radius / 3.0f;
+	}
+	cairo_set_font_size(cairo, font_size);
+
+
+	char *text_clockL1 = NULL;
+	char *text_clockL2 = NULL;
+
+	if (state->args.clock)
+		timetext(surface, &text_clockL1, &text_clockL2);
+
+
+	if (text_clockL1 && text_clockL2) {
+			cairo_text_extents_t extents_clock_l1;
+			cairo_font_extents_t fe_clock_l1;
+			double x_clock_l1, y_clock_l1;
+			//double x_clock_l2, y_clock_l2;
+			cairo_text_extents(cairo, text_clockL1, &extents_clock_l1);
+			cairo_font_extents(cairo, &fe_clock_l1);
+			x_clock_l1 = state->args.clock_x - buffer_width / (2 * surface->scale) + 2 / surface->scale;
+			y_clock_l1 = state->args.clock_y - buffer_width / (2 * surface->scale) + 2 / surface->scale;
+
+			cairo_move_to(cairo, x_clock_l1, y_clock_l1);
+			cairo_show_text(cairo, text_clockL1);
+			cairo_close_path(cairo);
+			cairo_new_sub_path(cairo);
+	}
+
 	if (state->args.indicator ||
 			(upstream_show_indicator && state->auth_state != AUTH_STATE_GRACE)) {
 		// Fill inner circle
@@ -233,10 +269,7 @@ void render_frame(struct swaylock_surface *surface) {
 		char *text = NULL;
 		char *text_l1 = NULL;
 		char *text_l2 = NULL;
-		char *text_clockL1 = NULL;
-		char *text_clockL2 = NULL;
 		const char *layout_text = NULL;
-		double font_size;
 		char attempts[4]; // like i3lock: count no more than 999
 		set_color_for_state(cairo, state, &state->args.colors.text);
 		cairo_select_font_face(cairo, state->args.font,
@@ -271,8 +304,6 @@ void render_frame(struct swaylock_surface *surface) {
 					snprintf(attempts, sizeof(attempts), "%d", state->failed_attempts);
 					text = attempts;
 				}
-			} else if (state->args.clock) {
-				timetext(surface, &text_clockL1, &text_clockL2);
 			}
 
 
@@ -301,22 +332,6 @@ void render_frame(struct swaylock_surface *surface) {
 			text = text_l1;
 		if (text_l2 && !text_l1)
 			text = text_l2;
-
-		if (text_clockL1 && text_clockL2) {
-			cairo_text_extents_t extents_clock_l1;
-			cairo_font_extents_t fe_clock_l1;
-			double x_clock_l1, y_clock_l1;
-			//double x_clock_l2, y_clock_l2;
-			cairo_text_extents(cairo, text_clockL1, &extents_clock_l1);
-			cairo_font_extents(cairo, &fe_clock_l1);
-			x_clock_l1 = state->args.clock_x - buffer_width / (2 * surface->scale) + 2 / surface->scale;
-			y_clock_l1 = state->args.clock_y - buffer_width / (2 * surface->scale) + 2 / surface->scale;
-
-			cairo_move_to(cairo, x_clock_l1, y_clock_l1);
-			cairo_show_text(cairo, text_clockL1);
-			cairo_close_path(cairo);
-			cairo_new_sub_path(cairo);
-		}
 
 		if (text) {
 			cairo_text_extents_t extents;
