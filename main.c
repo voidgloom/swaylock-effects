@@ -962,6 +962,8 @@ static int parse_options(int argc, char **argv, struct swaylock_state *state,
 		LO_GRACE,
 		LO_GRACE_NO_MOUSE,
 		LO_GRACE_NO_TOUCH,
+		LO_CLOCK_X,
+		LO_CLOCK_Y,
 	};
 
 	static struct option long_options[] = {
@@ -1037,6 +1039,8 @@ static int parse_options(int argc, char **argv, struct swaylock_state *state,
 		{"grace", required_argument, NULL, LO_GRACE},
 		{"grace-no-mouse", no_argument, NULL, LO_GRACE_NO_MOUSE},
 		{"grace-no-touch", no_argument, NULL, LO_GRACE_NO_TOUCH},
+		{"clock-x", required_argument, NULL, LO_CLOCK_X},
+		{"clock-y", required_argument, NULL, LO_CLOCK_Y},
 		{0, 0, 0, 0}
 	};
 
@@ -1600,6 +1604,16 @@ static int parse_options(int argc, char **argv, struct swaylock_state *state,
 				state->args.password_grace_no_touch = true;
 			}
 			break;
+		case LO_CLOCK_X:
+			if (state) {
+				state->args.clock_x = atoi(optarg); 
+			}
+			break;
+		case LO_CLOCK_Y:
+			if (state) {
+				state->args.clock_y = atoi(optarg); 
+			}
+			break;
 		default:
 			fprintf(stderr, "%s", usage);
 			return 1;
@@ -1894,5 +1908,10 @@ int main(int argc, char **argv) {
 	}
 
 	free(state.args.font);
+
+	
+	printf("clock_x: %i", state.args.clock_x);
+	printf("clock_y: %i", state.args.clock_y);
+	
 	return 0;
 }

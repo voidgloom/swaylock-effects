@@ -233,6 +233,8 @@ void render_frame(struct swaylock_surface *surface) {
 		char *text = NULL;
 		char *text_l1 = NULL;
 		char *text_l2 = NULL;
+		char *text_clockL1 = NULL;
+		char *text_clockL2 = NULL;
 		const char *layout_text = NULL;
 		double font_size;
 		char attempts[4]; // like i3lock: count no more than 999
@@ -270,8 +272,9 @@ void render_frame(struct swaylock_surface *surface) {
 					text = attempts;
 				}
 			} else if (state->args.clock) {
-				timetext(surface, &text_l1, &text_l2);
+				timetext(surface, &text_clockL1, &text_clockL2);
 			}
+
 
 			xkb_layout_index_t num_layout = xkb_keymap_num_layouts(state->xkb.keymap);
 			if (!state->args.hide_keyboard_layout &&
@@ -298,6 +301,22 @@ void render_frame(struct swaylock_surface *surface) {
 			text = text_l1;
 		if (text_l2 && !text_l1)
 			text = text_l2;
+
+		if (text_clockL1 && text_clockL2) {
+			cairo_text_extents_t extents_clock_l1;
+			cairo_font_extents_t fe_clock_l1;
+			double x_clock_l1, y_clock_l1;
+			//double x_clock_l2, y_clock_l2;
+			cairo_text_extents(cairo, text_clockL1, &extents_clock_l1);
+			cairo_font_extents(cairo, &fe_clock_l1);
+			x_clock_l1 = state->args.clock_x - buffer_width / (2 * surface->scale) + 2 / surface->scale;
+			y_clock_l1 = state->args.clock_y - buffer_width / (2 * surface->scale) + 2 / surface->scale;
+
+			cairo_move_to(cairo, x_clock_l1, y_clock_l1);
+			cairo_show_text(cairo, text_clockL1);
+			cairo_close_path(cairo);
+			cairo_new_sub_path(cairo);
+		}
 
 		if (text) {
 			cairo_text_extents_t extents;
@@ -359,6 +378,8 @@ void render_frame(struct swaylock_surface *surface) {
 
 
 			cairo_set_font_size(cairo, font_size);
+
+
 		}
 
 		// Typing indicator: Highlight random part on keypress
