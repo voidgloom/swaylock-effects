@@ -90,8 +90,58 @@ void render_frame_background(struct swaylock_surface *surface) {
 		render_background_image(cairo, surface->image,
 			state->args.mode, buffer_width, buffer_height);
 	}
+
+
+
+
 	cairo_restore(cairo);
+	cairo_set_antialias(cairo, CAIRO_ANTIALIAS_BEST);
+	cairo_font_options_t *fo = cairo_font_options_create();
+	cairo_font_options_set_hint_style(fo, CAIRO_HINT_STYLE_FULL);
+	cairo_font_options_set_antialias(fo, CAIRO_ANTIALIAS_SUBPIXEL);
+	cairo_font_options_set_subpixel_order(fo, to_cairo_subpixel_order(surface->subpixel));
+	cairo_set_font_options(cairo, fo);
+	cairo_font_options_destroy(fo);
 	cairo_identity_matrix(cairo);
+
+	cairo_identity_matrix(cairo);
+
+
+	double font_size;
+
+	cairo_select_font_face(cairo, state->args.font,
+			CAIRO_FONT_SLANT_NORMAL, CAIRO_FONT_WEIGHT_NORMAL);
+	if (state->args.font_size > 0) {
+			font_size = state->args.font_size;
+	} else {
+		font_size = 10;
+	}
+	cairo_set_font_size(cairo, font_size);
+
+
+	char *text_clockL1 = NULL;
+	char *text_clockL2 = NULL;
+
+	if (state->args.clock)
+		timetext(surface, &text_clockL1, &text_clockL2);
+
+
+	if (text_clockL1 && text_clockL2) {
+			cairo_text_extents_t extents_clock_l1;
+			cairo_font_extents_t fe_clock_l1;
+			double x_clock_l1, y_clock_l1;
+			//double x_clock_l2, y_clock_l2;
+			cairo_text_extents(cairo, text_clockL1, &extents_clock_l1);
+			cairo_font_extents(cairo, &fe_clock_l1);
+			x_clock_l1 = state->args.clock_x - buffer_width / (2 * surface->scale) + 2 / surface->scale;
+			y_clock_l1 = state->args.clock_y - buffer_width / (2 * surface->scale) + 2 / surface->scale;
+
+			cairo_move_to(cairo, x_clock_l1, y_clock_l1);
+			cairo_show_text(cairo, text_clockL1);
+			cairo_close_path(cairo);
+			cairo_new_sub_path(cairo);
+	}
+
 
 	wl_surface_set_buffer_scale(surface->surface, surface->scale);
 	wl_surface_attach(surface->surface, surface->current_buffer->buffer, 0, 0);
@@ -224,29 +274,6 @@ void render_frame(struct swaylock_surface *surface) {
 	}
 	cairo_set_font_size(cairo, font_size);
 
-
-	char *text_clockL1 = NULL;
-	char *text_clockL2 = NULL;
-
-	if (state->args.clock)
-		timetext(surface, &text_clockL1, &text_clockL2);
-
-
-	if (text_clockL1 && text_clockL2) {
-			cairo_text_extents_t extents_clock_l1;
-			cairo_font_extents_t fe_clock_l1;
-			double x_clock_l1, y_clock_l1;
-			//double x_clock_l2, y_clock_l2;
-			cairo_text_extents(cairo, text_clockL1, &extents_clock_l1);
-			cairo_font_extents(cairo, &fe_clock_l1);
-			x_clock_l1 = state->args.clock_x - buffer_width / (2 * surface->scale) + 2 / surface->scale;
-			y_clock_l1 = state->args.clock_y - buffer_width / (2 * surface->scale) + 2 / surface->scale;
-
-			cairo_move_to(cairo, x_clock_l1, y_clock_l1);
-			cairo_show_text(cairo, text_clockL1);
-			cairo_close_path(cairo);
-			cairo_new_sub_path(cairo);
-	}
 
 	if (state->args.indicator ||
 			(upstream_show_indicator && state->auth_state != AUTH_STATE_GRACE)) {
