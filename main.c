@@ -391,8 +391,10 @@ static void surface_frame_handle_done(void *data, struct wl_callback *callback,
 		surface->frame_pending = true;
 		surface->dirty = false;
 
-		if (time - 1000 > last_clock_time)
+		if (time - 1000 > last_clock_time) {
 			render_frame_background(surface);
+			last_clock_time = time;
+		}
 
 		if (!fade_is_complete(&surface->fade)) {
 			render_background_fade(surface, time);
