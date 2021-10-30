@@ -109,7 +109,7 @@ void render_frame_background(struct swaylock_surface *surface) {
 	if (state->args.font_size > 0) {
 			font_size = state->args.font_size;
 	} else {
-		font_size = 12;
+		font_size = 48;
 	}
 	cairo_set_font_size(cairo, font_size);
 
@@ -121,19 +121,29 @@ void render_frame_background(struct swaylock_surface *surface) {
 
 
 	if (text_clockL1 && text_clockL2) {
-			cairo_text_extents_t extents_clock_l1;
-			cairo_font_extents_t fe_clock_l1;
-			double x_clock_l1, y_clock_l1;
-			//double x_clock_l2, y_clock_l2;
+			cairo_text_extents_t extents_clock_l1, extents_clock_l2;
+			cairo_font_extents_t fe_clock_l1, fe_clock_l2;
+			double x_clock, y_clock;
 			cairo_text_extents(cairo, text_clockL1, &extents_clock_l1);
 			cairo_font_extents(cairo, &fe_clock_l1);
-			x_clock_l1 = state->args.clock_x * surface->scale;
-			y_clock_l1 = state->args.clock_y * surface->scale;
+			x_clock = state->args.clock_x * surface->scale;
+			y_clock = (state->args.clock_y + font_size) * surface->scale;
 
-			cairo_move_to(cairo, x_clock_l1, y_clock_l1);
+			cairo_move_to(cairo, x_clock, y_clock);
 			cairo_show_text(cairo, text_clockL1);
 			cairo_close_path(cairo);
 			cairo_new_sub_path(cairo);
+
+			cairo_text_extents(cairo, text_clockL2, &extents_clock_l2);
+			cairo_font_extents(cairo, &fe_clock_l2);
+			y_clock += font_size * surface->scale;
+
+			cairo_move_to(cairo, x_clock, y_clock);
+			cairo_show_text(cairo, text_clockL2);
+			cairo_close_path(cairo);
+			cairo_new_sub_path(cairo);
+
+
 	}
 
 	wl_surface_set_buffer_scale(surface->surface, surface->scale);
